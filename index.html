@@ -58,7 +58,6 @@
     </main>
 
     <script>
-        // --- LÓGICA DEL GENERADOR ---
         function calcularLuhn() {
             const rawInput = document.getElementById('accountNumber').value;
             const cleanInput = rawInput.replace(/\D/g, '');
@@ -116,7 +115,7 @@
             document.getElementById('finalDigit').textContent = checkDigit;
         }
 
- // --- LÓGICA DEL VALIDADOR MEJORADA ---
+
 function validarLuhn() {
     const rawInput = document.getElementById('validateInput').value;
     const cleanInput = rawInput.replace(/\D/g, ''); 
@@ -129,17 +128,16 @@ function validarLuhn() {
         return;
     }
 
-    // Separamos el cuerpo numérico del dígito verificador original proporcionado (el último carácter)
     const bodyNumbers = cleanInput.slice(0, -1);
     const originalCheckDigit = parseInt(cleanInput.slice(-1), 10);
 
-    // 1. Calculamos cuál DEBERÍA SER el dígito correcto para ese cuerpo numérico
+
     const digitsForGen = bodyNumbers.split('').map(Number);
     let sumGen = 0;
     
     for (let i = digitsForGen.length - 1, count = 0; i >= 0; i--, count++) {
         let d = digitsForGen[i];
-        if (count % 2 === 0) { // Posiciones impares desde la derecha (duplicadas)
+        if (count % 2 === 0) { 
             d *= 2;
             if (d > 9) d = Math.floor(d / 10) + (d % 10);
         }
@@ -148,7 +146,6 @@ function validarLuhn() {
     const unitsDigit = sumGen % 10;
     const correctCheckDigit = unitsDigit === 0 ? 0 : 10 - unitsDigit;
 
-    // 2. Evaluamos el número completo original sumando todos sus dígitos para la comprobación final de Luhn
     const fullDigits = cleanInput.split('').map(Number);
     let totalSum = 0;
     const len = fullDigits.length;
@@ -162,7 +159,6 @@ function validarLuhn() {
         totalSum += d;
     }
 
-    // Armamos la estructura visual con la comparación de resultados
     if (totalSum % 10 === 0) {
         badge.innerHTML = `
             <div class="badge-title">✓ NÚMERO VÁLIDO</div>
@@ -173,7 +169,6 @@ function validarLuhn() {
         `;
         badge.className = "validation-badge alert-success";
     } else {
-        // Si es incorrecto, construimos la cadena exacta de cómo debió ser
         const correctFullNumber = bodyNumbers + correctCheckDigit;
 
         badge.innerHTML = `
