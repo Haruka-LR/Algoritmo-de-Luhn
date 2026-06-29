@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dígito Verificador</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <div class="mockup-container">
+        <!-- Fila del Input y Botón -->
+        <div class="input-row">
+            <label for="accountNumber">Ingrese el número para generar<br>el dígito verificador:</label>
+            <input type="text" id="accountNumber" value="7992739871" maxlength="30">
+            <button id="btnGenerate">Generar Dígito<br>Verificador</button>
+        </div>
+
+        <!-- Tabla de pasos del algoritmo -->
+        <table class="luhn-table">
+            <tr id="rowStep1">
+                <td class="label-cell">1. Digitos del número de cuenta:</td>
+                <!-- Los TDs se generarán dinámicamente -->
+            </tr>
+            <tr id="rowStep2">
+                <td class="label-cell">2. Duplicar dígitos pares</td>
+                <!-- Los TDs se generarán dinámicamente -->
+            </tr>
+            <tr id="rowStep3">
+                <td class="label-cell">3. Sumar los dígitos</td>
+                <!-- Los TDs se generarán dinámicamente -->
+            </tr>
+        </table>
+
+        <!-- Sección de Resultado abajo centrado -->
+        <div class="result-container">
+            <div class="result-label">Digito<br>Verificador:</div>
+            <div id="finalDigit" class="result-box">-</div>
+        </div>
+    </div>
+
+    <script>
+        function calcularLuhn() {
+            const rawInput = document.getElementById('accountNumber').value;
+            const cleanInput = rawInput.replace(/\D/g, '');
+            
+            if (!cleanInput) return;
+
+            const digits = cleanInput.split('').map(Number);
+            
+            const row1 = document.getElementById('rowStep1');
+            const row2 = document.getElementById('rowStep2');
+            const row3 = document.getElementById('rowStep3');
+
+            // Limpiar celdas anteriores dejando solo el título de la izquierda
+            row1.innerHTML = '<td class="label-cell">1. Digitos del número de cuenta:</td>';
+            row2.innerHTML = '<td class="label-cell">2. Duplicar dígitos pares</td>';
+            row3.innerHTML = '<td class="label-cell">3. Sumar los dígitos</td>';
+
+            let sumTotal = 0;
+            const processedData = [];
+
+            // Algoritmo de Luhn para generar el dígito (recorriendo desde la derecha)
+            for (let i = digits.length - 1, count = 0; i >= 0; i--, count++) {
+                let original = digits[i];
+                let duplicated = original;
+                let textSum = `${original}`;
+                let isEvenPos = (count % 2 === 0); // Posición que se duplica
+
+                if (isEvenPos) {
+                    duplicated = original * 2;
+                    if (duplicated > 9) {
+                        textSum = `${Math.floor(duplicated / 10)}+${duplicated % 10}`;
+                        sumTotal += Math.floor(duplicated / 10) + (duplicated % 10);
+                    } else {
+                        textSum = `${duplicated}`;
+                        sumTotal += duplicated;
+                    }
+                } else {
+                    sumTotal += original;
+                }
+
+                processedData.unshift({ original, duplicated, textSum, isEvenPos });
+            }
+
+            // Insertar datos en la estructura horizontal de la tabla
+            processedData.forEach(item => {
+                const bgClass = item.isEvenPos ? 'bg-yellow' : 'bg-blue';
+                
+                row1.innerHTML += `<td class="data-cell bg-blue">${item.original}</td>`;
+                row2.innerHTML += `<td class="data-cell ${bgClass}">${item.duplicated}</td>`;
+                row3.innerHTML += `<td class="data-cell bg-blue">${item.textSum}</td>`;
+            });
+
+            // Columnas finales (X y Totales) igual que en image_d869ec.png
+            row1.innerHTML += `<td class="data-cell bg-green">X</td>`;
+            row2.innerHTML += `<td class="data-cell bg-green">X</td>`;
+            row3.innerHTML += `<td class="data-cell bg-green text-bold">=${sumTotal}</td>`;
+
+            // Cálculo del dígito verificador final
+            const unitsDigit = sumTotal % 10;
+            const checkDigit = unitsDigit === 0 ? 0 : 10 - unitsDigit;
+
+            document.getElementById('finalDigit').textContent = checkDigit;
+        }
+
+        // Ejecutar al dar clic y también al cargar la página para que se vea igual al mockup
+        document.getElementById('btnGenerate').addEventListener('click', calcularLuhn);
+        window.addEventListener('load', calcularLuhn);
+    </script>
+</body>
+</html>
