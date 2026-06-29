@@ -3,43 +3,62 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dígito Verificador</title>
+    <title>Luhn Algoritmo - Liquid Glass Edition</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-    <div class="mockup-container">
-        <!-- Fila del Input y Botón -->
-        <div class="input-row">
-            <label for="accountNumber">Ingrese el número para generar<br>el dígito verificador:</label>
-            <input type="text" id="accountNumber" value="7992739871" maxlength="30">
-            <button id="btnGenerate">Generar Dígito<br>Verificador</button>
-        </div>
+    <div class="bg-orb orb-1"></div>
+    <div class="bg-orb orb-2"></div>
+    <div class="bg-orb orb-3"></div>
 
-        <!-- Tabla de pasos del algoritmo -->
-        <table class="luhn-table">
-            <tr id="rowStep1">
-                <td class="label-cell">1. Digitos del número de cuenta:</td>
-                <!-- Los TDs se generarán dinámicamente -->
-            </tr>
-            <tr id="rowStep2">
-                <td class="label-cell">2. Duplicar dígitos pares</td>
-                <!-- Los TDs se generarán dinámicamente -->
-            </tr>
-            <tr id="rowStep3">
-                <td class="label-cell">3. Sumar los dígitos</td>
-                <!-- Los TDs se generarán dinámicamente -->
-            </tr>
-        </table>
+    <main class="main-container">
+        
+        <section class="card-glass">
+            <h2 class="section-title">Generador de Dígito Verificador</h2>
+            
+            <div class="input-row">
+                <label for="accountNumber">Ingrese el número para generar<br>el dígito verificador:</label>
+                <input type="text" id="accountNumber" value="7992739871" maxlength="30" autocomplete="off">
+                <button id="btnGenerate">Generar Dígito<br>Verificador</button>
+            </div>
 
-        <!-- Sección de Resultado abajo centrado -->
-        <div class="result-container">
-            <div class="result-label">Digito<br>Verificador:</div>
-            <div id="finalDigit" class="result-box">-</div>
-        </div>
-    </div>
+            <div class="table-wrapper">
+                <table class="luhn-table">
+                    <tr id="rowStep1">
+                        <td class="label-cell">1. Digitos del número de cuenta:</td>
+                    </tr>
+                    <tr id="rowStep2">
+                        <td class="label-cell">2. Duplicar dígitos pares:</td>
+                    </tr>
+                    <tr id="rowStep3">
+                        <td class="label-cell">3. Sumar los dígitos:</td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="result-container">
+                <div class="result-label">Dígito<br>Verificador:</div>
+                <div id="finalDigit" class="result-box">-</div>
+            </div>
+        </section>
+
+        <section class="card-glass">
+            <h2 class="section-title">Validador de Tarjetas y Series</h2>
+            
+            <div class="input-row">
+                <label for="validateInput">Ingrese el número completo<br>(Con dígito verificador):</label>
+                <input type="text" id="validateInput" placeholder="Ej. 52623656415429262" maxlength="40" autocomplete="off">
+                <button id="btnValidate" class="btn-validate">Validar Número<br>Existente</button>
+            </div>
+
+            <div id="validationResult" class="validation-badge hidden"></div>
+        </section>
+
+    </main>
 
     <script>
+        // --- LÓGICA DEL GENERADOR ---
         function calcularLuhn() {
             const rawInput = document.getElementById('accountNumber').value;
             const cleanInput = rawInput.replace(/\D/g, '');
@@ -47,25 +66,22 @@
             if (!cleanInput) return;
 
             const digits = cleanInput.split('').map(Number);
-            
             const row1 = document.getElementById('rowStep1');
             const row2 = document.getElementById('rowStep2');
             const row3 = document.getElementById('rowStep3');
 
-            // Limpiar celdas anteriores dejando solo el título de la izquierda
             row1.innerHTML = '<td class="label-cell">1. Digitos del número de cuenta:</td>';
-            row2.innerHTML = '<td class="label-cell">2. Duplicar dígitos pares</td>';
-            row3.innerHTML = '<td class="label-cell">3. Sumar los dígitos</td>';
+            row2.innerHTML = '<td class="label-cell">2. Duplicar dígitos pares:</td>';
+            row3.innerHTML = '<td class="label-cell">3. Sumar los dígitos:</td>';
 
             let sumTotal = 0;
             const processedData = [];
 
-            // Algoritmo de Luhn para generar el dígito (recorriendo desde la derecha)
             for (let i = digits.length - 1, count = 0; i >= 0; i--, count++) {
                 let original = digits[i];
                 let duplicated = original;
                 let textSum = `${original}`;
-                let isEvenPos = (count % 2 === 0); // Posición que se duplica
+                let isEvenPos = (count % 2 === 0);
 
                 if (isEvenPos) {
                     duplicated = original * 2;
@@ -83,29 +99,107 @@
                 processedData.unshift({ original, duplicated, textSum, isEvenPos });
             }
 
-            // Insertar datos en la estructura horizontal de la tabla
             processedData.forEach(item => {
                 const bgClass = item.isEvenPos ? 'bg-yellow' : 'bg-blue';
-                
                 row1.innerHTML += `<td class="data-cell bg-blue">${item.original}</td>`;
                 row2.innerHTML += `<td class="data-cell ${bgClass}">${item.duplicated}</td>`;
                 row3.innerHTML += `<td class="data-cell bg-blue">${item.textSum}</td>`;
             });
 
-            // Columnas finales (X y Totales) igual que en image_d869ec.png
             row1.innerHTML += `<td class="data-cell bg-green">X</td>`;
             row2.innerHTML += `<td class="data-cell bg-green">X</td>`;
             row3.innerHTML += `<td class="data-cell bg-green text-bold">=${sumTotal}</td>`;
 
-            // Cálculo del dígito verificador final
             const unitsDigit = sumTotal % 10;
             const checkDigit = unitsDigit === 0 ? 0 : 10 - unitsDigit;
 
             document.getElementById('finalDigit').textContent = checkDigit;
         }
 
-        // Ejecutar al dar clic y también al cargar la página para que se vea igual al mockup
+ // --- LÓGICA DEL VALIDADOR MEJORADA ---
+function validarLuhn() {
+    const rawInput = document.getElementById('validateInput').value;
+    const cleanInput = rawInput.replace(/\D/g, ''); 
+    const badge = document.getElementById('validationResult');
+
+    if (!cleanInput || cleanInput.length < 2) {
+        badge.innerHTML = `<div>Por favor, ingrese un número válido completo.</div>`;
+        badge.className = "validation-badge alert-error";
+        badge.classList.remove('hidden');
+        return;
+    }
+
+    // Separamos el cuerpo numérico del dígito verificador original proporcionado (el último carácter)
+    const bodyNumbers = cleanInput.slice(0, -1);
+    const originalCheckDigit = parseInt(cleanInput.slice(-1), 10);
+
+    // 1. Calculamos cuál DEBERÍA SER el dígito correcto para ese cuerpo numérico
+    const digitsForGen = bodyNumbers.split('').map(Number);
+    let sumGen = 0;
+    
+    for (let i = digitsForGen.length - 1, count = 0; i >= 0; i--, count++) {
+        let d = digitsForGen[i];
+        if (count % 2 === 0) { // Posiciones impares desde la derecha (duplicadas)
+            d *= 2;
+            if (d > 9) d = Math.floor(d / 10) + (d % 10);
+        }
+        sumGen += d;
+    }
+    const unitsDigit = sumGen % 10;
+    const correctCheckDigit = unitsDigit === 0 ? 0 : 10 - unitsDigit;
+
+    // 2. Evaluamos el número completo original sumando todos sus dígitos para la comprobación final de Luhn
+    const fullDigits = cleanInput.split('').map(Number);
+    let totalSum = 0;
+    const len = fullDigits.length;
+
+    for (let i = len - 1; i >= 0; i--) {
+        let d = fullDigits[i];
+        if ((len - 1 - i) % 2 === 1) {
+            d *= 2;
+            if (d > 9) d -= 9;
+        }
+        totalSum += d;
+    }
+
+    // Armamos la estructura visual con la comparación de resultados
+    if (totalSum % 10 === 0) {
+        badge.innerHTML = `
+            <div class="badge-title">✓ NÚMERO VÁLIDO</div>
+            <div class="comparison-box">
+                <p>El número estructurado cumple perfectamente con el algoritmo de Luhn.</p>
+                <div class="comp-row"><span class="comp-label">Número Ingresado:</span> <span class="text-valid">${cleanInput}</span></div>
+            </div>
+        `;
+        badge.className = "validation-badge alert-success";
+    } else {
+        // Si es incorrecto, construimos la cadena exacta de cómo debió ser
+        const correctFullNumber = bodyNumbers + correctCheckDigit;
+
+        badge.innerHTML = `
+            <div class="badge-title">✗ ESTRUCTURA INCORRECTA</div>
+            <div class="comparison-box">
+                <div class="comp-row">
+                    <span class="comp-label">Número Incorrecto:</span> 
+                    <span class="text-invalid">${cleanInput}</span>
+                </div>
+                <div class="comp-row">
+                    <span class="comp-label">Número Corregido:</span> 
+                    <span class="text-corrected">${correctFullNumber}</span>
+                </div>
+                <div class="digit-diff">
+                    El dígito proporcionado fue <span class="text-invalid">${originalCheckDigit}</span>, pero el algoritmo requiere que sea <span class="text-corrected">${correctCheckDigit}</span>.
+                </div>
+            </div>
+        `;
+        badge.className = "validation-badge alert-error";
+    }
+    
+    badge.classList.remove('hidden');
+}
+
         document.getElementById('btnGenerate').addEventListener('click', calcularLuhn);
+        document.getElementById('btnValidate').addEventListener('click', validarLuhn);
         window.addEventListener('load', calcularLuhn);
     </script>
 </body>

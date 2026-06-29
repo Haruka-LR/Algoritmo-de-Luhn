@@ -1,132 +1,345 @@
+/* ==========================================================================
+   1. CONFIGURACIÓN BASE Y FONDO CYBERPUNK OSCURO
+   ========================================================================== */
 body {
-    font-family: Arial, sans-serif;
-    background-color: #ffffff;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background-color: #000000;
+    background-image: 
+        radial-gradient(at 10% 12%, rgba(255, 255, 255, 0.03) 0px, transparent 50%),
+        radial-gradient(at 95% 85%, rgba(255, 255, 255, 0.02) 0px, transparent 50%);
+    min-height: 100vh;
+    margin: 0;
+    padding: 50px 20px;
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;
-    margin: 0;
+    overflow-x: hidden;
+    position: relative;
 }
 
-.mockup-container {
+/* Orbes de luz blanca fría de fondo para generar el contraste del vidrio */
+.bg-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(120px);
+    z-index: 0;
+    opacity: 0.15;
+    pointer-events: none;
+}
+.orb-1 { width: 450px; height: 450px; background: #ffffff; top: -5%; left: 15%; }
+.orb-2 { width: 550px; height: 550px; background: #ffffff; bottom: -5%; right: 10%; }
+.orb-3 { width: 300px; height: 300px; background: #cccccc; top: 45%; left: 40%; }
+
+.main-container {
     width: 100%;
-    max-width: 850px;
-    padding: 20px;
+    max-width: 900px;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    z-index: 1;
 }
 
-/* Fila de entrada de datos */
+/* ==========================================================================
+   2. EFECTO ULTRA LIQUID GLASS (VIDRIO GRUESO)
+   ========================================================================== */
+.card-glass {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
+    border-radius: 20px;
+    padding: 35px;
+    /* Doble sombra: una oscura profunda y un resplandor de neón blanco exterior sutil */
+    box-shadow: 
+        0 20px 50px rgba(0, 0, 0, 0.8), 
+        0 0 15px rgba(255, 255, 255, 0.03),
+        inset 0 2px 4px rgba(255, 255, 255, 0.25), /* Reflejo brillante en el borde superior */
+        inset 0 -1px 2px rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card-glass:hover {
+    transform: translateY(-3px);
+    box-shadow: 
+        0 25px 60px rgba(0, 0, 0, 0.9), 
+        0 0 25px rgba(255, 255, 255, 0.08), /* Incremento del neón blanco al pasar el cursor */
+        inset 0 3px 6px rgba(255, 255, 255, 0.4),
+        inset 0 -1px 3px rgba(255, 255, 255, 0.1);
+}
+
+/* Título estilo Minimalista con Brillo */
+.section-title {
+    font-size: 19px;
+    font-weight: 700;
+    color: #ffffff;
+    margin-top: 0;
+    margin-bottom: 25px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    border-left: 3px solid #ffffff;
+    padding-left: 12px;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
+}
+
+/* ==========================================================================
+   3. COMPONENTES DE ENTRADA Y FORMULARIOS
+   ========================================================================== */
 .input-row {
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    gap: 15px;
-    margin-bottom: 35px;
-}
-
-.input-row label {
-    font-size: 14px;
-    color: #555555;
-    font-weight: bold;
-    text-align: right;
-    line-height: 1.3;
-}
-
-.input-row input {
-    width: 320px;
-    padding: 10px;
-    font-size: 16px;
-    border: 1px solid #cccccc;
-    border-radius: 6px;
-    color: #555555;
-}
-
-.input-row button {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    padding: 8px 18px;
-    font-size: 13px;
-    font-weight: bold;
-    border-radius: 6px;
-    cursor: pointer;
-    text-align: center;
-    line-height: 1.3;
-}
-
-/* Configuración de la Tabla */
-.luhn-table {
-    width: 100%;
-    border-collapse: separate;
-    border-spacing: 0 12px; /* Margen separado por filas según la imagen */
+    gap: 20px;
     margin-bottom: 30px;
 }
 
-.label-cell {
-    width: 220px;
+.input-row label {
     font-size: 13px;
-    color: #777777;
-    text-align: right;
+    color: #a3a3a3;
+    font-weight: 600;
+    line-height: 1.4;
+    width: 220px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.input-row input {
+    flex: 1;
+    max-width: 340px;
+    padding: 12px 16px;
+    font-size: 16px;
+    background: rgba(0, 0, 0, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 8px;
+    color: #ffffff;
+    outline: none;
+    transition: all 0.2s ease;
+}
+
+.input-row input:focus {
+    border-color: #ffffff;
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.2); /* Brillo neón blanco al enfocar */
+    background: #000000;
+}
+
+/* Botones Acromáticos de Alto Contraste */
+.input-row button {
+    background: linear-gradient(135deg, #262626 0%, #171717 100%);
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 10px 22px;
+    font-size: 12px;
+    font-weight: 700;
+    border-radius: 8px;
+    cursor: pointer;
+    line-height: 1.3;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    transition: all 0.2s ease;
+}
+
+.input-row button:hover {
+    background: linear-gradient(135deg, #ffffff 0%, #e5e5e5 100%);
+    color: #000000;
+    border-color: #ffffff;
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.4);
+}
+
+/* ==========================================================================
+   4. TABLAS DE PASOS (MOCKUP ORIGINAL PRESERVADO)
+   ========================================================================== */
+.table-wrapper {
+    overflow-x: auto;
+    margin-bottom: 25px;
+}
+
+.luhn-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 10px;
+}
+
+.label-cell {
+    width: 230px;
+    font-size: 13px;
+    color: #737373;
+    font-weight: 600;
     padding-right: 15px;
 }
 
 .data-cell {
-    border: 1px solid #84a2ca;
-    width: 38px;
-    height: 38px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    width: 40px;
+    height: 40px;
     text-align: center;
     vertical-align: middle;
     font-size: 14px;
-    font-weight: bold;
-    color: #000000;
+    font-weight: 700;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.02);
 }
 
-/* Colores idénticos a image_d869ec.png */
+/* Clases de colores de la práctica adaptados a la estética monocromática */
 .bg-blue {
-    background-color: #e3effd;
-    border-color: #a4c2eb;
+    background-color: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.25);
+    color: #ffffff;
 }
 
 .bg-yellow {
-    background-color: #fff3cd;
-    border-color: #ffda6a;
+    background-color: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.45);
+    color: #ffffff;
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
 }
 
 .bg-green {
-    background-color: #d4edda;
-    border-color: #c3e6cb;
+    background-color: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.35);
+    color: #ffffff;
 }
 
-.text-bold {
-    font-weight: bold;
-}
+.text-bold { font-weight: 800; }
 
-/* Sección Inferior del Dígito Verificador */
+/* ==========================================================================
+   5. SECCIÓN DE RESULTADO (Caja Neón Blanca Envolvente)
+   ========================================================================== */
 .result-container {
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
-    gap: 20px;
-    margin-top: 20px;
-    margin-left: 100px; /* Desfase sutil para balancear con el diseño */
+    gap: 25px;
+    margin-top: 25px;
+    padding-left: 230px;
 }
 
 .result-label {
-    font-size: 24px;
-    color: #222222;
-    text-align: center;
+    font-size: 18px;
+    font-weight: 700;
+    color: #ffffff;
     line-height: 1.2;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .result-box {
-    background-color: #f8d7da;
-    border: 1px solid #f5c6cb;
-    color: #000000;
-    font-size: 42px;
-    font-weight: normal;
-    width: 120px;
-    height: 80px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    color: #ffffff;
+    font-size: 38px;
+    font-weight: 700;
+    width: 110px;
+    height: 75px;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 20px;
+    border-radius: 14px;
+    box-shadow: 
+        0 0 20px rgba(255, 255, 255, 0.15),
+        inset 0 1px 2px rgba(255, 255, 255, 0.3);
+    text-shadow: 0 0 12px rgba(255, 255, 255, 0.6);
+}
+
+/* ==========================================================================
+   6. CONTENEDORES Y BLOQUES DEL VALIDADOR MEJORADO
+   ========================================================================== */
+.validation-badge {
+    margin-left: 240px;
+    max-width: 340px;
+    width: 100%;
+    padding: 16px;
+    font-size: 13px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(10px);
+}
+
+.badge-title {
+    font-size: 14px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    margin-bottom: 12px;
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
+}
+
+.comparison-box {
+    text-align: left;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 14px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.comparison-box p {
+    margin: 0 0 5px 0;
+    font-size: 12px;
+    color: #a3a3a3;
+    text-transform: none;
+}
+
+.comp-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    font-family: 'Courier New', Courier, monospace; /* Fuente de consola */
+    font-weight: bold;
+}
+
+.comp-label {
+    color: #737373;
+}
+
+/* Resaltados de estados de validación */
+.text-valid {
+    color: #ffffff;
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.6);
+}
+
+.text-invalid {
+    color: #fca5a5;
+    text-shadow: 0 0 8px rgba(239, 68, 68, 0.4);
+}
+
+.text-corrected {
+    color: #ffffff;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+    text-decoration: underline;
+}
+
+.digit-diff {
+    margin-top: 5px;
+    padding-top: 8px;
+    border-top: 1px dashed rgba(255, 255, 255, 0.1);
+    font-size: 11px;
+    color: #a3a3a3;
+    text-transform: none;
+    line-height: 1.4;
+}
+
+/* Alertas de contenedor */
+.alert-success {
+    background-color: rgba(255, 255, 255, 0.03);
+    border: 1px solid #ffffff;
+    color: #ffffff;
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+}
+
+.alert-error {
+    background-color: rgba(239, 68, 68, 0.05);
+    border: 1px solid rgba(239, 68, 68, 0.4);
+    color: #fca5a5;
+}
+
+.hidden { display: none !important; }
+
+/* ==========================================================================
+   7. AJUSTES RESPONSIVOS (MOBILE OPTIMIZATION)
+   ========================================================================== */
+@media (max-width: 768px) {
+    .input-row { flex-direction: column; align-items: flex-start; }
+    .input-row label { width: 100%; text-align: left; }
+    .result-container, .validation-badge { padding-left: 0; margin-left: 0; justify-content: center; }
 }
